@@ -40,15 +40,15 @@ export async function GET(request: Request, { params }: { params: Promise<{ code
       return NextResponse.json({ error: 'File not found on server' }, { status: 404 });
     }
 
-    let fileBuffer = fs.readFileSync(filePath);
+    let fileBuffer: Buffer = fs.readFileSync(filePath);
 
     if (decompress && fileMeta.compression) {
       if (fileMeta.compression === 'Gzip') {
-        fileBuffer = zlib.gunzipSync(fileBuffer);
+        fileBuffer = Buffer.from(zlib.gunzipSync(fileBuffer));
       } else if (fileMeta.compression === 'Brotli') {
-        fileBuffer = zlib.brotliDecompressSync(fileBuffer);
+        fileBuffer = Buffer.from(zlib.brotliDecompressSync(fileBuffer));
       } else if (fileMeta.compression === 'Huffman') {
-        fileBuffer = huffmanDecode(fileBuffer);
+        fileBuffer = Buffer.from(huffmanDecode(fileBuffer));
       }
     }
 
@@ -63,7 +63,7 @@ export async function GET(request: Request, { params }: { params: Promise<{ code
       else if (fileMeta.compression === 'Huffman') filename += '.huff';
     }
 
-    return new NextResponse(fileBuffer, {
+    return new NextResponse(fileBuffer as any, {
       headers: {
         'Content-Disposition': `attachment; filename="${filename}"`,
         'Content-Type': 'application/octet-stream',

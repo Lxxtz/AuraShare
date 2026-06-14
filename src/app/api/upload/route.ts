@@ -54,7 +54,7 @@ export async function POST(request: Request) {
       buffer = zlib.brotliCompressSync(buffer);
       appliedCompression = 'Brotli';
     } else if (compression === 'Huffman') {
-      buffer = huffmanEncode(buffer);
+      buffer = Buffer.from(huffmanEncode(buffer));
       appliedCompression = 'Huffman';
     }
 
