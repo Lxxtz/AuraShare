@@ -1,0 +1,169 @@
+@import url('https://fonts.googleapis.com/css2?family=VT323&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap');
+
+:root {
+  --bg-color: #0d0221; /* deep synthwave purple */
+  --grid-color: #f72585; /* hot pink */
+  --surface-color: rgba(36, 0, 70, 0.85); /* dark purple panel */
+  --surface-border: #4cc9f0; /* neon cyan */
+  
+  --primary-color: #4cc9f0; /* cyan */
+  --secondary-color: #f72585; /* pink */
+  --accent-color: #fee440; /* bright yellow */
+  
+  --text-main: #e0aaff;
+  --text-light: #ffffff;
+  --error-color: #ff003c;
+  --success-color: #00f5d4;
+  
+  --font-heading: 'VT323', monospace;
+  --font-body: 'Space Mono', monospace;
+  
+  --transition-fast: 0.1s steps(2);
+  --transition-normal: 0.3s ease-in-out;
+}
+
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+*, *::before, *::after {
+  box-sizing: inherit;
+}
+
+body {
+  background-color: var(--bg-color);
+  /* Retro Grid Background */
+  background-image: 
+    linear-gradient(rgba(247, 37, 133, 0.3) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(247, 37, 133, 0.3) 1px, transparent 1px);
+  background-size: 40px 40px;
+  background-position: center bottom;
+  
+  color: var(--text-main);
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Glassmorphism -> Retro Terminal / Arcade Panel */
+.glass-panel {
+  background: var(--surface-color);
+  border: 4px solid var(--surface-border);
+  box-shadow: 
+    8px 8px 0px var(--secondary-color),
+    inset 0 0 20px rgba(76, 201, 240, 0.2);
+  border-radius: 0; /* blocky retro style */
+}
+
+/* Typography */
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-heading);
+  color: var(--primary-color);
+  text-shadow: 2px 2px 0px var(--secondary-color);
+  text-transform: uppercase;
+  margin-bottom: 1rem;
+  font-weight: normal;
+}
+
+/* Buttons */
+.btn-primary {
+  background: var(--bg-color);
+  color: var(--primary-color);
+  border: 3px solid var(--primary-color);
+  padding: 0.75rem 1.5rem;
+  font-family: var(--font-heading);
+  font-size: 1.5rem;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.1s;
+  box-shadow: 4px 4px 0px var(--primary-color);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-primary:hover {
+  background: var(--primary-color);
+  color: var(--bg-color);
+  box-shadow: 0px 0px 0px var(--primary-color);
+  transform: translate(4px, 4px);
+}
+
+.btn-secondary {
+  background: var(--bg-color);
+  color: var(--secondary-color);
+  border: 3px solid var(--secondary-color);
+  padding: 0.75rem 1.5rem;
+  font-family: var(--font-heading);
+  font-size: 1.5rem;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.1s;
+  box-shadow: 4px 4px 0px var(--secondary-color);
+}
+
+.btn-secondary:hover {
+  background: var(--secondary-color);
+  color: var(--bg-color);
+  box-shadow: 0px 0px 0px var(--secondary-color);
+  transform: translate(4px, 4px);
+}
+
+/* Inputs */
+.input-field {
+  width: 100%;
+  background: #000;
+  border: 2px solid var(--primary-color);
+  color: var(--accent-color);
+  padding: 0.75rem 1rem;
+  font-family: var(--font-body);
+  font-size: 1rem;
+  outline: none;
+  border-radius: 0;
+}
+
+.input-field:focus {
+  border-color: var(--secondary-color);
+  box-shadow: 0 0 10px var(--secondary-color);
+}
+
+/* Animations */
+@keyframes flicker {
+  0% { opacity: 0.9; }
+  5% { opacity: 0.5; }
+  10% { opacity: 1; }
+  15% { opacity: 0.8; }
+  20% { opacity: 1; }
+  100% { opacity: 1; }
+}
+
+.animate-fade-in {
+  animation: flicker 2s infinite alternate;
+  animation-iteration-count: 1; /* just once for entry */
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+  width: 100%;
+}
+
+/* Custom Table for Retro History */
+table {
+  border: 2px solid var(--primary-color);
+}
+th, td {
+  border: 1px solid var(--primary-color);
+}
+th {
+  background: var(--surface-border);
+  color: #000 !important;
+  font-family: var(--font-heading);
+  font-size: 1.2rem;
+  text-transform: uppercase;
+}
