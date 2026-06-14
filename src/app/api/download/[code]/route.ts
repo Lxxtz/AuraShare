@@ -3,6 +3,8 @@ import { getSession } from '@/lib/auth';
 import prisma from '@/lib/prisma';
 import fs from 'fs';
 import path from 'path';
+import zlib from 'zlib';
+import { huffmanDecode } from '@/lib/huffman';
 
 import { isExpired } from '@/lib/cleanup';
 
@@ -12,6 +14,9 @@ export async function GET(request: Request, { params }: { params: Promise<{ code
     if (!session) {
       return NextResponse.json({ error: 'Unauthorized: You must be logged in to download files.' }, { status: 401 });
     }
+
+    const { searchParams } = new URL(request.url);
+    const decompress = searchParams.get('decompress') === 'true';
 
     const { code } = await params;
     
@@ -35,13 +40,34 @@ export async function GET(request: Request, { params }: { params: Promise<{ code
       return NextResponse.json({ error: 'File not found on server' }, { status: 404 });
     }
 
-    const fileBuffer = fs.readFileSync(filePath);
-    
+    let fileBuffer = fs.readFileSync(filePath);
+
+    if (decompress && fileMeta.compression) {
+      if (fileMeta.compression === 'Gzip') {
+        fileBuffer = zlib.gunzipSync(fileBuffer);
+      } else if (fileMeta.compression === 'Brotli') {
+        fileBuffer = zlib.brotliDecompressSync(fileBuffer);
+      } else if (fileMeta.compression === 'Huffman') {
+        fileBuffer = huffmanDecode(fileBuffer);
+      }
+    }
+
+    // We can compute the actual length since decompressed buffer might be different
+    const contentLength = fileBuffer.length.toString();
+
+    // Optionally append extension if sending compressed but not decompressed
+    let filename = fileMeta.original_name;
+    if (!decompress && fileMeta.compression) {
+      if (fileMeta.compression === 'Gzip') filename += '.gz';
+      else if (fileMeta.compression === 'Brotli') filename += '.br';
+      else if (fileMeta.compression === 'Huffman') filename += '.huff';
+    }
+
     return new NextResponse(fileBuffer, {
       headers: {
-        'Content-Disposition': `attachment; filename="${fileMeta.original_name}"`,
+        'Content-Disposition': `attachment; filename="${filename}"`,
         'Content-Type': 'application/octet-stream',
-        'Content-Length': fileMeta.size.toString(),
+        'Content-Length': contentLength,
       },
     });
 

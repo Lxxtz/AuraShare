@@ -25,6 +25,7 @@ model File {
   original_name String
   stored_path   String
   unique_code   String   @unique
+  compression   String?
   size          Int
   uploader_id   String
   uploader      User     @relation(fields: [uploader_id], references: [id])
